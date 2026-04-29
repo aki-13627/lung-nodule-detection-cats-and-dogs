@@ -18,6 +18,7 @@ python3 -m venv venv_yolo
 source venv_yolo/bin/activate
 
 pip install --upgrade pip
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
 pip install ultralytics pydicom pandas opencv-python tqdm
 
 ./venv_yolo/bin/python3 -c "import torch; print('PyTorch version:', torch.__version__); print('GPU available:', torch.cuda.is_available())"
@@ -25,7 +26,7 @@ pip install ultralytics pydicom pandas opencv-python tqdm
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
 LOG_FILE="yolo_train_${TIMESTAMP}.log"
 
-nohup bash -c "./venv_yolo/bin/python3 utils/prepare_data.py && ./venv_yolo/bin/python3 train.py" > $LOG_FILE 2>&1 &
+nohup bash -c "./venv_yolo/bin/python3 train.py" > $LOG_FILE 2>&1 &
 
 echo "YOLO26 Process started in background."
 echo "Log file: $LOG_FILE"
