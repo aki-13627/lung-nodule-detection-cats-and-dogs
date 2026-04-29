@@ -1,0 +1,5 @@
+path: /home/azureuser/lung-nodule-detection-cats-and-dogs/data/yolo_format
+train: images/train
+val: images/val
+nc: 1
+names: ['Nodule/Mass']
