@@ -115,7 +115,9 @@ def main():
 
     training_args = TrainingArguments(
         output_dir="deformable_detr_nodules",
-        per_device_train_batch_size=4,
+        per_device_train_batch_size=1,
+        gradient_accumulation_steps=4,
+        gradient_checkpointing=True,
         num_train_epochs=100,
         fp16=True,
         save_steps=500,
