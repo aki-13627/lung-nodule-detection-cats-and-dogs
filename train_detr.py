@@ -33,23 +33,38 @@ class NoduleDataset(Dataset):
         image = Image.open(img_path).convert("RGB")
         anns = self.annotations.get(img_id, [])
 
+        if len(anns) == 0:
+            return self.__getitem__((idx + 1) % len(self.image_ids))
+
+        valid_anns = []
+        for ann in anns:
+            x, y, w, h = ann["bbox"]
+            if w <= 0 or h <= 0:
+                continue
+            valid_anns.append(ann)
+
+        if len(valid_anns) == 0:
+            return self.__getitem__((idx + 1) % len(self.image_ids))
+
         target = {
             "image_id": img_id,
-            "annotations": anns
+            "annotations": valid_anns
         }
 
-        encoding = self.image_processor(images=image, annotations=target, return_tensors="pt")
-        pixel_values = encoding["pixel_values"].squeeze()
-        labels = encoding["labels"][0]
-
-        return {"pixel_values": pixel_values, "labels": labels}
+        try:
+            encoding = self.image_processor(images=image, annotations=target, return_tensors="pt")
+            pixel_values = encoding["pixel_values"].squeeze()
+            labels = encoding["labels"][0]
+            return {"pixel_values": pixel_values, "labels": labels}
+        except Exception:
+            return self.__getitem__((idx + 1) % len(self.image_ids))
 
 def main():
     checkpoint = "SenseTime/deformable-detr"
     image_processor = AutoImageProcessor.from_pretrained(checkpoint)
     
-    id2label = {1: "Nodule/Mass"}
-    label2id = {"Nodule/Mass": 1}
+    id2label = {0: "Nodule/Mass"}
+    label2id = {"Nodule/Mass": 0}
     
     model = AutoModelForObjectDetection.from_pretrained(
         checkpoint,
@@ -100,9 +115,7 @@ def main():
 
     training_args = TrainingArguments(
         output_dir="deformable_detr_nodules",
-        per_device_train_batch_size=1,
-        gradient_accumulation_steps=4,
-        gradient_checkpointing=True,
+        per_device_train_batch_size=4,
         num_train_epochs=100,
         fp16=True,
         save_steps=500,

@@ -19,7 +19,7 @@ source venv_detr/bin/activate
 
 pip install --upgrade pip
 pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
-pip install transformers accelerate pydicom pandas opencv-python tqdm timm
+pip install transformers accelerate pydicom pandas opencv-python tqdm timm scipy
 
 ./venv_detr/bin/python3 -c "import torch; print('PyTorch version:', torch.__version__); print('GPU available:', torch.cuda.is_available())"
 

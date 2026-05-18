@@ -16,7 +16,7 @@ def process_vindr_to_coco(csv_path, source_img_dir, dest_img_dir, json_out_path)
     coco_data = {
         "images": [],
         "annotations": [],
-        "categories": [{"id": 1, "name": "Nodule/Mass"}]
+        "categories": [{"id": 0, "name": "Nodule/Mass"}]
     }
 
     grouped = df_nodule.groupby('image_id')
@@ -69,7 +69,7 @@ def process_vindr_to_coco(csv_path, source_img_dir, dest_img_dir, json_out_path)
             coco_data["annotations"].append({
                 "id": ann_counter,
                 "image_id": current_img_id,
-                "category_id": 1,
+                "category_id": 0,
                 "bbox": [x_min, y_min, width, height],
                 "area": area,
                 "iscrowd": 0
