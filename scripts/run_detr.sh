@@ -19,14 +19,14 @@ source venv_detr/bin/activate
 
 pip install --upgrade pip
 pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
-pip install transformers accelerate pydicom pandas opencv-python tqdm
+pip install transformers accelerate pydicom pandas opencv-python tqdm timm
 
 ./venv_detr/bin/python3 -c "import torch; print('PyTorch version:', torch.__version__); print('GPU available:', torch.cuda.is_available())"
 
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
 LOG_FILE="detr_train_${TIMESTAMP}.log"
 
-nohup bash -c "./venv_detr/bin/python3 utils/prepare_data_for_detr.py && ./venv_detr/bin/python3 train_detr.py" > $LOG_FILE 2>&1 &
+nohup bash -c "./venv_detr/bin/python3 train_detr.py" > $LOG_FILE 2>&1 &
 
 echo "DETR Process started in background."
 echo "Log file: $LOG_FILE"
