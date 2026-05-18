@@ -1,6 +1,7 @@
 import os
 import json
 import torch
+import torch.nn.functional as F
 from torch.utils.data import Dataset
 from PIL import Image
 from transformers import AutoImageProcessor, AutoModelForObjectDetection, TrainingArguments, Trainer
@@ -72,10 +73,30 @@ def main():
     def collate_fn(batch):
         pixel_values = [item["pixel_values"] for item in batch]
         labels = [item["labels"] for item in batch]
-        
-        batch_dict = image_processor.pad({"pixel_values": pixel_values}, return_tensors="pt")
-        batch_dict["labels"] = labels
-        return batch_dict
+
+        max_h = max(img.shape[1] for img in pixel_values)
+        max_w = max(img.shape[2] for img in pixel_values)
+
+        padded_pixel_values = []
+        pixel_mask = []
+
+        for img in pixel_values:
+            _, h, w = img.shape
+            pad_h = max_h - h
+            pad_w = max_w - w
+
+            padded_img = F.pad(img, (0, pad_w, 0, pad_h), value=0.0)
+            padded_pixel_values.append(padded_img)
+
+            mask = torch.zeros((max_h, max_w), dtype=torch.long)
+            mask[:h, :w] = 1
+            pixel_mask.append(mask)
+
+        return {
+            "pixel_values": torch.stack(padded_pixel_values),
+            "pixel_mask": torch.stack(pixel_mask),
+            "labels": labels
+        }
 
     training_args = TrainingArguments(
         output_dir="deformable_detr_nodules",
