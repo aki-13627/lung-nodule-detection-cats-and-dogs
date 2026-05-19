@@ -8,7 +8,7 @@ val_img_dir = "./data/coco_format/images/train"
 val_json_path = "./data/coco_format/annotations/instances_train.json"
 checkpoint_path = "./deformable_detr_nodules/checkpoint-21100"
 output_dir = "./inference_compare"
-num_samples = 5
+num_samples = 20
 
 os.makedirs(output_dir, exist_ok=True)
 
