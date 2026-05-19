@@ -7,8 +7,8 @@ from transformers import AutoImageProcessor, AutoModelForObjectDetection
 from pycocotools.coco import COCO
 from pycocotools.cocoeval import COCOeval
 
-val_img_dir = "./data/coco_format/images/val"
-val_json_path = "./data/coco_format/annotations/instances_val.json"
+val_img_dir = "./data/coco_format/images/train"
+val_json_path = "./data/coco_format/annotations/instances_train.json"
 checkpoint_path = "./deformable_detr_nodules/checkpoint-21100"
 output_json_path = "./inference_results/predictions.json"
 
@@ -26,7 +26,6 @@ image_ids = coco_gt.getImgIds()
 
 predictions = []
 
-print(f"Starting inference on {len(image_ids)} validation images...")
 
 for img_id in tqdm(image_ids):
     img_info = coco_gt.loadImgs(img_id)[0]
