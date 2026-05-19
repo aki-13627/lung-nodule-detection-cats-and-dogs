@@ -3,6 +3,7 @@ import json
 import torch
 import torch.nn.functional as F
 from torch.utils.data import Dataset
+from datetime import datetime
 from PIL import Image
 from transformers import AutoImageProcessor, AutoModelForObjectDetection, TrainingArguments, Trainer
 
@@ -60,6 +61,7 @@ class NoduleDataset(Dataset):
             return self.__getitem__((idx + 1) % len(self.image_ids))
 
 def main():
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     checkpoint = "SenseTime/deformable-detr"
     image_processor = AutoImageProcessor.from_pretrained(checkpoint)
     
@@ -114,35 +116,39 @@ def main():
         }
 
     training_args = TrainingArguments(
-    output_dir="deformable_detr_nodules",
-    per_device_train_batch_size=1,
-    gradient_accumulation_steps=4,
-    gradient_checkpointing=True,
-    num_train_epochs=40,
-    fp16=True,
-    eval_strategy="epoch",
-    save_strategy="epoch",
-    logging_strategy="epoch",
-    learning_rate=2e-5,
-    weight_decay=1e-4,
-    save_total_limit=2,
-    remove_unused_columns=False,
-    dataloader_num_workers=4,
-    load_best_model_at_end=True,
-    metric_for_best_model="eval_loss",
-    greater_is_better=False,
-)
+        output_dir="deformable_detr_nodules",
+        per_device_train_batch_size=1,
+        gradient_accumulation_steps=4,
+        gradient_checkpointing=True,
+        num_train_epochs=40,
+        fp16=True,
+        eval_strategy="epoch",
+        save_strategy="epoch",
+        logging_strategy="epoch",
+        learning_rate=2e-5,
+        weight_decay=1e-4,
+        save_total_limit=2,
+        remove_unused_columns=False,
+        dataloader_num_workers=4,
+        load_best_model_at_end=True,
+        metric_for_best_model="eval_loss",
+        greater_is_better=False,
+    )
 
     trainer = Trainer(
-    model=model,
-    args=training_args,
-    train_dataset=train_dataset,
-    eval_dataset=val_dataset,
-    tokenizer=image_processor,
-    data_collator=collate_fn,
-)
+        model=model,
+        args=training_args,
+        train_dataset=train_dataset,
+        eval_dataset=val_dataset,
+        tokenizer=image_processor,
+        data_collator=collate_fn,
+    )
 
     trainer.train()
+
+    final_save_path = os.path.join("deformable_detr_nodules", f"best_model_{timestamp}")
+    trainer.save_model(final_save_path)
+    image_processor.save_pretrained(final_save_path)
 
 if __name__ == '__main__':
     main()

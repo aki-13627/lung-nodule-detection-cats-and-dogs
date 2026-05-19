@@ -55,6 +55,7 @@ def process_vindr_to_coco(csv_path, source_img_dir, dest_img_dir, json_out_path)
             img_counter += 1
 
         current_img_id = image_id_map[image_id]
+        image_area = img_width * img_height
 
         for _, row in group.iterrows():
             x_min = float(row['x_min'])
@@ -65,6 +66,9 @@ def process_vindr_to_coco(csv_path, source_img_dir, dest_img_dir, json_out_path)
             width = x_max - x_min
             height = y_max - y_min
             area = width * height
+
+            if area > 0.10 * image_area:
+                continue
 
             coco_data["annotations"].append({
                 "id": ann_counter,
