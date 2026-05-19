@@ -114,28 +114,33 @@ def main():
         }
 
     training_args = TrainingArguments(
-        output_dir="deformable_detr_nodules",
-        per_device_train_batch_size=1,
-        gradient_accumulation_steps=4,
-        gradient_checkpointing=True,
-        num_train_epochs=100,
-        fp16=True,
-        save_steps=500,
-        logging_steps=50,
-        learning_rate=2e-5,
-        weight_decay=1e-4,
-        save_total_limit=2,
-        remove_unused_columns=False,
-        dataloader_num_workers=4,
-    )
+    output_dir="deformable_detr_nodules",
+    per_device_train_batch_size=1,
+    gradient_accumulation_steps=4,
+    gradient_checkpointing=True,
+    num_train_epochs=40,
+    fp16=True,
+    eval_strategy="epoch",
+    save_strategy="epoch",
+    logging_strategy="epoch",
+    learning_rate=2e-5,
+    weight_decay=1e-4,
+    save_total_limit=2,
+    remove_unused_columns=False,
+    dataloader_num_workers=4,
+    load_best_model_at_end=True,
+    metric_for_best_model="eval_loss",
+    greater_is_better=False,
+)
 
     trainer = Trainer(
-        model=model,
-        args=training_args,
-        train_dataset=train_dataset,
-        eval_dataset=val_dataset,
-        data_collator=collate_fn,
-    )
+    model=model,
+    args=training_args,
+    train_dataset=train_dataset,
+    eval_dataset=val_dataset,
+    tokenizer=image_processor,
+    data_collator=collate_fn,
+)
 
     trainer.train()
 
