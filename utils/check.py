@@ -5,8 +5,8 @@ from PIL import Image, ImageDraw
 from transformers import AutoImageProcessor, AutoModelForObjectDetection
 
 checkpoint_path = "./deformable_detr_nodules/checkpoint-21100"
-test_img_dir = "./data/coco_format/images/test"
-test_json_path = "./data/coco_format/annotations/instances_test.json"
+test_img_dir = "./data/coco_format/images/val"
+test_json_path = "./data/coco_format/annotations/instances_val.json"
 output_dir = "./inference_results"
 num_samples = 5
 
