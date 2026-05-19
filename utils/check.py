@@ -4,8 +4,8 @@ import torch
 from PIL import Image, ImageDraw
 from transformers import AutoImageProcessor, AutoModelForObjectDetection
 
-val_img_dir = "./data/coco_format/images/val"
-val_json_path = "./data/coco_format/annotations/instances_val.json"
+val_img_dir = "./data/coco_format/images/train"
+val_json_path = "./data/coco_format/annotations/instances_train.json"
 checkpoint_path = "./deformable_detr_nodules/checkpoint-21100"
 output_dir = "./inference_compare"
 num_samples = 5
