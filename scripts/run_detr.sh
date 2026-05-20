@@ -26,7 +26,7 @@ pip install transformers accelerate pydicom pandas opencv-python-headless tqdm t
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
 LOG_FILE="detr_train_${TIMESTAMP}.log"
 
-nohup bash -c "./venv_detr/bin/python3 train_detr.py" > $LOG_FILE 2>&1 &
+nohup bash -c " ./venv_detr/bin/python3 train_detr.py" > $LOG_FILE 2>&1 &
 
 echo "DETR Process started in background."
 echo "Log file: $LOG_FILE"
