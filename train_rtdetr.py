@@ -5,10 +5,13 @@ def main():
     
     results = model.train(
         data="data.yaml",
-        epochs=200,
+        epochs=100,
         imgsz=1024,
-        batch=2,
+        batch=4,
         device=0,
+        cls=2.5,
+        box=5.0,
+        mosaic=1.0,
         project="outputs_rtdetr",
         name="lung_nodule_run"
     )
