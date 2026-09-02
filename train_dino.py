@@ -8,6 +8,7 @@ from torchvision import transforms
 from pycocotools.coco import COCO
 from PIL import Image
 from tqdm import tqdm
+from datetime import datetime
 from models.dino import (
     DINONoduleDetector, 
     HungarianMatcher, 
@@ -213,7 +214,7 @@ def main():
     param_dicts = [
         {
             "params": [p for n, p in model.named_parameters() if "backbone" not in n and p.requires_grad],
-            "lr": 1e-4,
+            "lr": 1e-5,
         },
         {
             "params": [p for n, p in model.named_parameters() if "backbone" in n and p.requires_grad],
@@ -227,9 +228,11 @@ def main():
         train_loss = train_one_epoch(model, criterion, optimizer, train_dataloader, device, epoch, num_epochs)
         val_loss = evaluate(model, criterion, val_dataloader, device)
         print(f"Epoch {epoch}/{num_epochs} Completed | Train Loss: {train_loss:.4f} | Val Loss: {val_loss:.4f}\n")
-        
-        checkpoint_path = checkpoints_dir / f"epoch_{epoch:03d}.pth"
-        torch.save(model.state_dict(), checkpoint_path)
+
+    timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+    final_checkpoint_path = checkpoints_dir / f"dino_model_final_{timestamp}.pth"
+    torch.save(model.state_dict(), final_checkpoint_path)
+    print(f"トレーニングが完了しました。最終モデルを保存しました: {final_checkpoint_path}")
 
 if __name__ == "__main__":
     main()
