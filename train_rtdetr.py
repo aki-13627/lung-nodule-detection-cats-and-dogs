@@ -1,13 +1,13 @@
 from ultralytics import RTDETR
 
 def main():
-    model = RTDETR("rtdetr-x.pt")
+    model = RTDETR("rtdetr-l.pt")
     
     results = model.train(
         data="data.yaml",
         epochs=100,
-        imgsz=1024,
-        batch=4,
+        imgsz=512,
+        batch=8,
         device=0,
         cls=2.5,
         box=5.0,
