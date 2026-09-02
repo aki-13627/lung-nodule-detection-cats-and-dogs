@@ -124,8 +124,8 @@ def main():
     else:
         device = torch.device("cpu")
     
-    img_dir = "../lung-rads-data/data_png"
-    ann_file = "../lung-rads-data/coco_annotations.json"
+    img_dir = "../data_png"
+    ann_file = "./coco_annotations.json"
     
     outputs_dir = Path("outputs")
     checkpoints_dir = outputs_dir / "checkpoints"
