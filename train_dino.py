@@ -214,7 +214,7 @@ def main():
     param_dicts = [
         {
             "params": [p for n, p in model.named_parameters() if "backbone" not in n and p.requires_grad],
-            "lr": 1e-4,
+            "lr": 1e-5,
         },
         {
             "params": [p for n, p in model.named_parameters() if "backbone" in n and p.requires_grad],
