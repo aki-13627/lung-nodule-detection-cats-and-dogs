@@ -217,10 +217,10 @@ def main():
         },
         {
             "params": [p for n, p in model.named_parameters() if "backbone" in n and p.requires_grad],
-            "lr": 1e-5,
+            "lr": 1e-6,
         },
     ]
-    optimizer = optim.AdamW(param_dicts, lr=1e-5, weight_decay=1e-4)
+    optimizer = optim.AdamW(param_dicts, lr=1e-6, weight_decay=1e-4)
 
     num_epochs = 50
     for epoch in range(1, num_epochs + 1):
