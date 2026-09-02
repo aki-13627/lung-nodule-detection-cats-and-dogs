@@ -202,7 +202,7 @@ def main():
     model = DINONoduleDetector(backbone=backbone, transformer=transformer, num_classes=2, num_queries=100, d_model=256)
     model.to(device)
 
-    matcher = HungarianMatcher(cost_class=20, cost_bbox=5.0, cost_giou=2.0)
+    matcher = HungarianMatcher(cost_class=2.0, cost_bbox=5.0, cost_giou=2.0)
     
     weight_dict = {'loss_ce': 2.0, 'loss_bbox': 10, 'loss_giou': 2.0}
     for i in range(5):
