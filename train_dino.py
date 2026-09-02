@@ -199,22 +199,22 @@ def main():
     backbone = build_backbone()
     transformer = build_transformer()
 
-    model = DINONoduleDetector(backbone=backbone, transformer=transformer, num_classes=2, num_queries=300, d_model=256)
+    model = DINONoduleDetector(backbone=backbone, transformer=transformer, num_classes=2, num_queries=100, d_model=256)
     model.to(device)
 
     matcher = HungarianMatcher(cost_class=20, cost_bbox=5.0, cost_giou=2.0)
     
-    weight_dict = {'loss_ce': 5.0, 'loss_bbox': 10, 'loss_giou': 2.0}
+    weight_dict = {'loss_ce': 2.0, 'loss_bbox': 10, 'loss_giou': 2.0}
     for i in range(5):
-        weight_dict.update({f'loss_ce_{i}': 5.0 , f'loss_bbox_{i}': 10, f'loss_giou_{i}': 2.0})
+        weight_dict.update({f'loss_ce_{i}': 2.0 , f'loss_bbox_{i}': 10, f'loss_giou_{i}': 2.0})
 
-    criterion = SetCriterion(matcher=matcher, weight_dict=weight_dict, focal_alpha=0.75)
+    criterion = SetCriterion(matcher=matcher, weight_dict=weight_dict, focal_alpha=0.25)
     criterion.to(device)
 
     param_dicts = [
         {
             "params": [p for n, p in model.named_parameters() if "backbone" not in n and p.requires_grad],
-            "lr": 1e-5,
+            "lr": 1e-4,
         },
         {
             "params": [p for n, p in model.named_parameters() if "backbone" in n and p.requires_grad],
