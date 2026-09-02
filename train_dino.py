@@ -229,7 +229,7 @@ def main():
         val_loss = evaluate(model, criterion, val_dataloader, device)
         print(f"Epoch {epoch}/{num_epochs} Completed | Train Loss: {train_loss:.4f} | Val Loss: {val_loss:.4f}\n")
 
-    timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     final_checkpoint_path = checkpoints_dir / f"dino_model_final_{timestamp}.pth"
     torch.save(model.state_dict(), final_checkpoint_path)
     print(f"トレーニングが完了しました。最終モデルを保存しました: {final_checkpoint_path}")
