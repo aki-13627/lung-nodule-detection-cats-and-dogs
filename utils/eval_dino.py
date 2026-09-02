@@ -2,30 +2,25 @@ import os
 import torch
 import sys
 from pathlib import Path
-
-sys.path.append(str(Path(__file__).resolve().parent.parent))
-
-from pathlib import Path
 from pycocotools.coco import COCO
 from PIL import Image
 from torchvision import transforms
 from torchvision.ops import box_convert, box_iou
 from tqdm import tqdm
+
+sys.path.append(str(Path(__file__).resolve().parent.parent))
 from models.dino import DINONoduleDetector, build_backbone, build_transformer
 
-
 def main():
-    if torch.backends.mps.is_available():
-        device = torch.device("mps")
-    elif torch.cuda.is_available():
+    if torch.cuda.is_available():
         device = torch.device("cuda")
     else:
         device = torch.device("cpu")
     
-    img_dir = Path("../lung-rads-data/data_png")
-    ann_file = "../lung-rads-data/coco_annotations.json"
-    checkpoint_path = "outputs/checkpoints/epoch_020.pth"
-    val_txt_path = "outputs/split/val.txt"
+    img_dir = Path("./data_png")
+    ann_file = "./coco_annotations.json"
+    checkpoint_path = "outputs/checkpoints/dino_model_final_20260902_133224.pth"
+    val_txt_path = "outputs/split/train.txt"
     
     with open(val_txt_path, "r") as f:
         val_files = set(line.strip() for line in f if line.strip())
@@ -41,20 +36,20 @@ def main():
     image_paths = {path.name: path for path in img_dir.rglob('*.png')}
 
     transform = transforms.Compose([
-        transforms.Resize((512, 512)),
+        transforms.Resize((518, 518)),
         transforms.ToTensor(),
         transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
     ])
 
     backbone = build_backbone()
     transformer = build_transformer()
-    model = DINONoduleDetector(backbone=backbone, transformer=transformer, num_classes=2, num_queries=300, d_model=256)
+    model = DINONoduleDetector(backbone=backbone, transformer=transformer, num_classes=2, num_queries=100, d_model=256)
     
     model.load_state_dict(torch.load(checkpoint_path, map_location=device))
     model.to(device)
     model.eval()
 
-    CONF_THRESH = 0.5
+    CONF_THRESH = 0.3
     IOU_THRESH = 0.5
 
     img_TP = 0
@@ -104,9 +99,9 @@ def main():
             pred_boxes = outputs['pred_boxes'][0]
 
             probs = pred_logits.sigmoid()
-            max_probs, _ = probs.max(dim=1)
+            nodule_probs = probs[:, 1]
             
-            mask = max_probs > CONF_THRESH
+            mask = nodule_probs > CONF_THRESH
             pred_boxes_filtered = pred_boxes[mask]
             
             has_pred = len(pred_boxes_filtered) > 0
@@ -151,23 +146,23 @@ def main():
                 box_FN += len(gt_boxes_xyxy)
 
     print("\n" + "="*40)
-    print(" 評価結果 (スコア閾値: 0.5, IoU閾値: 0.5)")
+    print(" Evaluation Results (Score Thresh: 0.5, IoU Thresh: 0.5)")
     print("="*40 + "\n")
     
-    print("[画像レベル (症例・画像ごとの判定)]")
+    print("[Image Level]")
     img_total = img_TP + img_TN + img_FP + img_FN
     print(f"TP: {img_TP}, TN: {img_TN}, FP: {img_FP}, FN: {img_FN} (Total: {img_total})")
     img_sensitivity = img_TP / (img_TP + img_FN) if (img_TP + img_FN) > 0 else 0.0
     img_specificity = img_TN / (img_TN + img_FP) if (img_TN + img_FP) > 0 else 0.0
-    print(f"画像レベル 感度 (Sensitivity) : {img_sensitivity:.4f}")
-    print(f"画像レベル 特異度 (Specificity) : {img_specificity:.4f}\n")
+    print(f"Image Level Sensitivity : {img_sensitivity:.4f}")
+    print(f"Image Level Specificity : {img_specificity:.4f}\n")
 
-    print("[バウンディングボックスレベル (正確な位置の検出)]")
+    print("[Bounding Box Level]")
     print(f"TP: {box_TP}, FP: {box_FP}, FN: {box_FN}")
     box_sensitivity = box_TP / (box_TP + box_FN) if (box_TP + box_FN) > 0 else 0.0
     box_precision = box_TP / (box_TP + box_FP) if (box_TP + box_FP) > 0 else 0.0
-    print(f"ボックスレベル 感度 (Recall)  : {box_sensitivity:.4f}")
-    print(f"ボックスレベル 適合率(Precision): {box_precision:.4f}")
+    print(f"Box Level Recall      : {box_sensitivity:.4f}")
+    print(f"Box Level Precision   : {box_precision:.4f}")
 
 if __name__ == "__main__":
     main()
