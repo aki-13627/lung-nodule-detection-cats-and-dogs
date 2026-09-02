@@ -1,2 +1,4 @@
 inference_results/*
 inference_compare/*
+outputs/*
+data_png/
