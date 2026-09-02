@@ -5,9 +5,9 @@ def main():
     
     results = model.train(
         data="data.yaml",
-        epochs=100,
-        imgsz=512,
-        batch=4,
+        epochs=200,
+        imgsz=1024,
+        batch=2,
         device=0,
         project="outputs_rtdetr",
         name="lung_nodule_run"
