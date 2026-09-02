@@ -214,20 +214,23 @@ def main():
     param_dicts = [
         {
             "params": [p for n, p in model.named_parameters() if "backbone" not in n and p.requires_grad],
-            "lr": 1e-6,
+            "lr": 1e-5,
         },
         {
             "params": [p for n, p in model.named_parameters() if "backbone" in n and p.requires_grad],
-            "lr": 1e-7,
+            "lr": 1e-6,
         },
     ]
-    optimizer = optim.AdamW(param_dicts, lr=1e-7, weight_decay=1e-5)
+    optimizer = optim.AdamW(param_dicts, lr=1e-6, weight_decay=1e-4)
 
-    num_epochs = 50
+    num_epochs = 25
+    scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=15, gamma=0.1)
+    
     for epoch in range(1, num_epochs + 1):
         train_loss = train_one_epoch(model, criterion, optimizer, train_dataloader, device, epoch, num_epochs)
         val_loss = evaluate(model, criterion, val_dataloader, device)
         print(f"Epoch {epoch}/{num_epochs} Completed | Train Loss: {train_loss:.4f} | Val Loss: {val_loss:.4f}\n")
+        scheduler.step()
 
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     final_checkpoint_path = checkpoints_dir / f"dino_model_final_{timestamp}.pth"
