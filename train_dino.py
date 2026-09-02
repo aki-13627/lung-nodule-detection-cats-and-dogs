@@ -204,9 +204,9 @@ def main():
 
     matcher = HungarianMatcher(cost_class=20, cost_bbox=5.0, cost_giou=2.0)
     
-    weight_dict = {'loss_ce': 10, 'loss_bbox': 5.0, 'loss_giou': 2.0}
+    weight_dict = {'loss_ce': 5.0, 'loss_bbox': 5.0, 'loss_giou': 2.0}
     for i in range(5):
-        weight_dict.update({f'loss_ce_{i}': 10, f'loss_bbox_{i}': 5.0, f'loss_giou_{i}': 2.0})
+        weight_dict.update({f'loss_ce_{i}': 5.0 , f'loss_bbox_{i}': 5.0, f'loss_giou_{i}': 2.0})
 
     criterion = SetCriterion(matcher=matcher, weight_dict=weight_dict, focal_alpha=0.95)
     criterion.to(device)

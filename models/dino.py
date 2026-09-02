@@ -37,7 +37,6 @@ class PositionEmbeddingSine(nn.Module):
         pos_x = torch.stack((pos_x[:, :, :, 0::2].sin(), pos_x[:, :, :, 1::2].cos()), dim=4).flatten(3)
         pos_y = torch.stack((pos_y[:, :, :, 0::2].sin(), pos_y[:, :, :, 1::2].cos()), dim=4).flatten(3)
         
-        # 修正済み: 正しい位置エンコーディングの返り値
         pos = torch.cat((pos_y, pos_x), dim=3).permute(0, 3, 1, 2).contiguous()
         return pos
 
@@ -66,7 +65,6 @@ class DINOv2Backbone(nn.Module):
         h_feat = h // 14
         w_feat = w // 14
         
-        # 修正済み: contiguous と reshape を組み合わせて安全に変換
         x = patch_tokens.permute(0, 2, 1).contiguous().reshape(b, -1, h_feat, w_feat)
         out = self.conv(x)
         
@@ -87,7 +85,6 @@ class Transformer(nn.Module):
         self.num_decoder_layers = num_decoder_layers
 
     def forward(self, srcs, masks, poss, query_embed):
-        # 修正済み: Transformer専用の安全なメモリ配置
         src = srcs[0].flatten(2).permute(2, 0, 1).contiguous()
         pos = poss[0].flatten(2).permute(2, 0, 1).contiguous()
         
@@ -102,7 +99,6 @@ class Transformer(nn.Module):
                 tgt + query_embed, memory, 
                 memory_key_padding_mask=masks[0].flatten(1)
             )
-            # 修正済み: ここもcontiguousで安全に
             hs.append(tgt.permute(1, 0, 2).contiguous())
 
         return torch.stack(hs)
