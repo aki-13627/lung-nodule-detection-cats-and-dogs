@@ -7,12 +7,11 @@ def main():
         data="data.yaml",
         epochs=200,
         imgsz=768,
-        batch=4,
+        batch=8,
         device=0,
         cls=2.5,
         box=5.0,
         mosaic=0.3,
-        optimizer="AdamW",
         project="outputs_rtdetr",
         name="lung_nodule_recall_run"
     )
