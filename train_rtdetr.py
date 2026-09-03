@@ -13,7 +13,7 @@ def main():
         box=5.0,
         mosaic=0.3,
         lr0=1e-4,
-        lrf=0.01,
+        lrf=0.5,
         optimizer="AdamW",
         project="outputs_rtdetr",
         name="lung_nodule_recall_run"
