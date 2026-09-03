@@ -10,7 +10,6 @@ def main():
         imgsz=768,
         batch=4,
         device=0,
-        optimize="recall",
         project="outputs_rtdetr",
         name="tune_lung_nodule"
     )
