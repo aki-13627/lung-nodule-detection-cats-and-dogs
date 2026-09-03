@@ -29,7 +29,7 @@ def main():
         epochs=30,
         iterations=30,
         imgsz=768,
-        batch=4,
+        batch=8,
         device=0,
         optimizer="AdamW",
         space=search_space,
