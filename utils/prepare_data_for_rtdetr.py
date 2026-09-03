@@ -4,7 +4,7 @@ from pathlib import Path
 from pycocotools.coco import COCO
 
 def main():
-    img_dir = Path("../data_png")
+    img_dir = Path("./data_png")
     ann_file = "./coco_annotations.json"
     train_txt = "outputs/split/train.txt"
     val_txt = "outputs/split/val.txt"

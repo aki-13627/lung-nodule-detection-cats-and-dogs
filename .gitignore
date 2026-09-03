@@ -3,3 +3,5 @@ inference_compare/*
 outputs/*
 data_png/
 coco_annotations.json
+runs/*
+yolo_dataset/*
