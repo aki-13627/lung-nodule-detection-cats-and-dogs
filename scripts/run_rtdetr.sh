@@ -23,7 +23,7 @@ pip install torch torchvision torchaudio --index-url https://download.pytorch.or
 
 # 先に headless 版を入れておき、後から入るパッケージの競合を防ぐ
 pip install opencv-python-headless
-pip install ultralytics pycocotools
+pip install ultralytics pycocotools pandas
 
 ./venv_rtdetr/bin/python3 -c "import torch; print('PyTorch version:', torch.__version__); print('GPU available:', torch.cuda.is_available()); import cv2; print('OpenCV imported successfully!')"
 
