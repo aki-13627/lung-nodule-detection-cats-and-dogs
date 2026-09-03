@@ -5,7 +5,8 @@ def main():
     
     results = model.train(
         data="data.yaml",
-        epochs=200,
+        lr0=
+        epochs=100,
         imgsz=768,
         batch=8,
         device=0,
