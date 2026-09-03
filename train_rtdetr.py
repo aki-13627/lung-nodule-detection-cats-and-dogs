@@ -23,8 +23,8 @@ def main():
     
     model.tune(
         data="data.yaml",
-        epochs=30,
-        iterations=30,
+        epochs=20,
+        iterations=40,
         imgsz=768,
         batch=8,
         device=0,
