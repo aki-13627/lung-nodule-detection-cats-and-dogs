@@ -7,6 +7,7 @@ def main():
     metrics = model.val(
         data="data.yaml",
         split="train",
+        conf=0.481,
         iou=0.5,    
         project="outputs_rtdetr",  
         name="val_for_train_lung_nodule_run-15"    
