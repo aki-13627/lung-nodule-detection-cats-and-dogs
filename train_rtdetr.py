@@ -13,7 +13,7 @@ def main():
         device=0,
         cls=2.5,
         box=7.5,
-        mosaic=0.5
+        mosaic=0.5,
         project="outputs_rtdetr",
         name="lung_nodule_recall_run"
     )
