@@ -6,9 +6,9 @@ def main():
     results = model.train(
         data="data.yaml",
         lr0=1e-2,
-        lrf=0.01,
-        epochs=200,
-        imgsz=768,
+        lrf=0.1,
+        epochs=100,
+        imgsz=512,
         batch=8,
         device=0,
         cls=2.5,
