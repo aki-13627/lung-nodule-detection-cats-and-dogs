@@ -7,7 +7,7 @@ def main():
         data="data.yaml",
         lr0=1e-2,
         lrf=0.01,
-        epochs=100,
+        epochs=200,
         imgsz=768,
         batch=8,
         device=0,
