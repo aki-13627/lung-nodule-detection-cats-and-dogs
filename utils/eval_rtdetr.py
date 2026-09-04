@@ -6,10 +6,10 @@ def main():
     
     metrics = model.val(
         data="data.yaml",
-        conf=0.01,
+        split="train",
         iou=0.5,    
         project="outputs_rtdetr",  
-        name="val_lung_nodule_run-15"    
+        name="val_for_train_lung_nodule_run-15"    
     )
 if __name__ == "__main__":
     main()
