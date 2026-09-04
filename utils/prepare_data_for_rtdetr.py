@@ -5,7 +5,7 @@ from pycocotools.coco import COCO
 
 def main():
     img_dir = Path("./data_png")
-    ann_file = "./coco_annotations.json"
+    ann_file = "./merged_coco_annotations.json"
     train_txt = "outputs/split/train.txt"
     val_txt = "outputs/split/val.txt"
 
@@ -26,36 +26,37 @@ def main():
     coco = COCO(ann_file)
     image_paths = {path.name: path for path in img_dir.rglob('*.png')}
 
-    for img_id, img_info in coco.imgs.items():
-        file_name = os.path.basename(img_info['file_name'])
-        if file_name not in image_paths:
-            continue
+    with open(train_txt, "a") as train_f:
+        for img_id, img_info in coco.imgs.items():
+            file_name = os.path.basename(img_info['file_name'])
+            if file_name not in image_paths:
+                continue
 
-        if file_name in train_files:
-            img_dest = images_train / file_name
-            label_dest = labels_train / f"{Path(file_name).stem}.txt"
-        elif file_name in val_files:
-            img_dest = images_val / file_name
-            label_dest = labels_val / f"{Path(file_name).stem}.txt"
-        else:
-            continue
+            if file_name in val_files:
+                img_dest = images_val / file_name
+                label_dest = labels_val / f"{Path(file_name).stem}.txt"
+            else:
+                img_dest = images_train / file_name
+                label_dest = labels_train / f"{Path(file_name).stem}.txt"
+                if file_name not in train_files:
+                    train_f.write(f"{file_name}\n")
 
-        shutil.copy(image_paths[file_name], img_dest)
+            shutil.copy(image_paths[file_name], img_dest)
 
-        ann_ids = coco.getAnnIds(imgIds=img_id)
-        anns = coco.loadAnns(ann_ids)
+            ann_ids = coco.getAnnIds(imgIds=img_id)
+            anns = coco.loadAnns(ann_ids)
 
-        img_w = img_info['width']
-        img_h = img_info['height']
+            img_w = img_info['width']
+            img_h = img_info['height']
 
-        with open(label_dest, "w") as f:
-            for ann in anns:
-                x_min, y_min, w, h = ann['bbox']
-                cx = (x_min + w / 2) / img_w
-                cy = (y_min + h / 2) / img_h
-                nw = w / img_w
-                nh = h / img_h
-                f.write(f"0 {cx:.6f} {cy:.6f} {nw:.6f} {nh:.6f}\n")
+            with open(label_dest, "w") as label_f:
+                for ann in anns:
+                    x_min, y_min, w, h = ann['bbox']
+                    cx = (x_min + w / 2) / img_w
+                    cy = (y_min + h / 2) / img_h
+                    nw = w / img_w
+                    nh = h / img_h
+                    label_f.write(f"0 {cx:.6f} {cy:.6f} {nw:.6f} {nh:.6f}\n")
 
 if __name__ == "__main__":
     main()
