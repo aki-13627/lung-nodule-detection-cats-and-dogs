@@ -1,7 +1,7 @@
 from ultralytics import RTDETR
 
 def main():
-    model = RTDETR("rtdetrv2-l.pt") 
+    model = RTDETR("rtdetr-l.pt") 
     
     results = model.train(
         data="data.yaml",
