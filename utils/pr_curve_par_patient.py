@@ -11,9 +11,9 @@ def extract_patient_id(file_path):
     return file_path.stem.split('_')[0]
 
 def generate_patient_level_roc():
-    model = RTDETR("./runs/detect/outputs_yolo/lung_nodule_recall_run-23/weights/best.pt")
-    images_dir = Path("yolo_dataset_local/images/val")
-    labels_dir = Path("yolo_dataset_local/labels/val")
+    model = RTDETR("./runs/detect/outputs_rtdetr/lung_nodule_recall_run-23/weights/best.pt")
+    images_dir = Path("yolo_dataset/images/val")
+    labels_dir = Path("yolo_dataset/labels/val")
     
     base_conf = 0.0001
     image_paths = [p for p in images_dir.glob("*.*") if p.suffix.lower() in ['.png', '.jpg', '.jpeg']]
@@ -40,7 +40,7 @@ def generate_patient_level_roc():
         if has_annotation:
             patient_gt[pid] = 1
             
-        results = model.predict(source=str(img_path), imgsz=512, conf=base_conf, device="cpu", verbose=False)
+        results = model.predict(source=str(img_path), imgsz=512, conf=base_conf, device="mps", verbose=False)
         
         img_max_conf = 0.0
         if len(results[0].boxes) > 0:

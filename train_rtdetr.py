@@ -1,7 +1,7 @@
 from ultralytics import YOLO
 
 def main():
-    model = YOLO("yolo26n.pt")
+    model = YOLO("rtdetr-l.pt")
     
     results = model.train(
         data="data.yaml",
@@ -12,7 +12,7 @@ def main():
         cls=2.5,
         box=5.0,
         mosaic=1.0,
-        project="outputs_yolo26",
+        project="outputs_rtdetr",
         name="lung_nodule_recall_run"
     )
 
