@@ -4,5 +4,5 @@ outputs/*
 data_png/
 coco_annotations.json
 runs/*
-yolo_dataset/*
+yolo_dataset*/*
 images/*

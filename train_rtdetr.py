@@ -1,7 +1,7 @@
-from ultralytics import RTDETR
+from ultralytics import YOLO
 
 def main():
-    model = RTDETR("rtdetr-l.pt") 
+    model = YOLO("yolo26n.pt")
     
     results = model.train(
         data="data.yaml",
@@ -12,8 +12,8 @@ def main():
         cls=2.5,
         box=5.0,
         mosaic=1.0,
-        project="outputs_rtdetr",
-        name="lung_nodule_recall_run-24"
+        project="outputs_yolo26",
+        name="lung_nodule_recall_run"
     )
 
 if __name__ == "__main__":
