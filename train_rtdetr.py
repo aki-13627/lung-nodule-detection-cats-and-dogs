@@ -12,8 +12,8 @@ def main():
         cls=2.5,
         box=5.0,
         mosaic=1.0,
-        project="outputs_rtdetrv4",
-        name="lung_nodule_recall_run"
+        project="outputs_rtdetr",
+        name="lung_nodule_recall_run-24"
     )
 
 if __name__ == "__main__":
