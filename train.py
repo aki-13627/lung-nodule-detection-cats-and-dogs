@@ -2,20 +2,19 @@ from ultralytics import YOLO
 import os
 
 def main():
-    model = YOLO('yolo26m.pt')
+    model = YOLO('yolo26l.pt')
 
     results = model.train(
-        data='dataset.yaml',
+        data='data.yaml',
         epochs=100,
-        imgsz=640,
+        imgsz=512,
         batch=8,
         device=0,
-        project='models',
-        name='nodule_detection',
-        exist_ok=True,
-        save=True,
-        plots=True,
-        optimizer='MuSGD'
+        cls=2.5,
+        box=5.0,
+        mosaic=1.0,
+        project="outputs_yolo26",
+        name="lung_nodule_recall_run"
     )
 
 if __name__ == '__main__':
