@@ -6,7 +6,7 @@ def main():
 
     results = model.train(
         data='dataset.yaml',
-        epochs=200,
+        epochs=100,
         imgsz=640,
         batch=16,
         device=0,
