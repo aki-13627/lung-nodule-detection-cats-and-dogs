@@ -8,7 +8,7 @@ def main():
         data='dataset.yaml',
         epochs=100,
         imgsz=640,
-        batch=16,
+        batch=8,
         device=0,
         project='models',
         name='nodule_detection',
