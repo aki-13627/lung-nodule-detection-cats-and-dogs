@@ -5,7 +5,7 @@ import numpy as np
 from ultralytics import RTDETR
 
 def create_prediction_grids():
-    model = RTDETR("./runs/detect/outputs_rtdetr/lung_nodule_recall_run-23/weights/best.pt")
+    model = RTDETR("./runs/detect/outputs_rtdetr/lung_nodule_recall_run-25/weights/best.pt")
     
     images_dir = Path("yolo_dataset/images/val")
     labels_dir = Path("yolo_dataset/labels/val")
@@ -16,7 +16,7 @@ def create_prediction_grids():
     image_paths = sorted(image_paths)
     
     target_size = (512, 512)
-    conf_threshold = 0.2
+    conf_threshold = 0.3862
     
     pairs = []
     
@@ -57,8 +57,12 @@ def create_prediction_grids():
         gt_resized = cv2.resize(gt_img, target_size)
         pred_resized = cv2.resize(pred_img, target_size)
         
-        cv2.putText(gt_resized, "Ground Truth", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 255, 0), 2)
-        cv2.putText(pred_resized, "Prediction", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 255), 2)
+        local_idx = len(pairs) % 8
+        gt_num = local_idx * 2 + 1
+        pred_num = local_idx * 2 + 2
+        
+        cv2.putText(gt_resized, f"No.{gt_num}", (10, 45), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 255, 0), 3)
+        cv2.putText(pred_resized, f"No.{pred_num}", (10, 45), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 0, 255), 3)
         
         pair = cv2.hconcat([gt_resized, pred_resized])
         cv2.line(pair, (target_size[0], 0), (target_size[0], target_size[1]), (255, 255, 255), 2)
@@ -82,7 +86,7 @@ def create_prediction_grids():
         for j in range(1, 4):
             cv2.line(grid, (0, target_size[1]*j), (target_size[0]*4, target_size[1]*j), (255, 255, 255), 4)
             
-        out_filename = f"val_predictions_grid_{grid_count}.jpg"
+        out_filename = f"images/pred/val_predictions_rtdetr_grid_{grid_count}.jpg"
         cv2.imwrite(out_filename, grid)
         print(f"Saved {out_filename}")
         grid_count += 1

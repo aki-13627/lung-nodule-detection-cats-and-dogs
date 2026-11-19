@@ -11,11 +11,12 @@ def extract_patient_id(file_path):
     return file_path.stem.split('_')[0]
 
 def generate_patient_level_roc():
-    model = RTDETR("./runs/detect/outputs_rtdetr/lung_nodule_recall_run-23/weights/best.pt")
+    model = RTDETR("./runs/detect/outputs_rtdetr/lung_nodule_recall_run-25/weights/best.pt")
     images_dir = Path("yolo_dataset/images/val")
     labels_dir = Path("yolo_dataset/labels/val")
     
     base_conf = 0.0001
+    model_name = "RT-DETR"
     image_paths = [p for p in images_dir.glob("*.*") if p.suffix.lower() in ['.png', '.jpg', '.jpeg']]
     
     patient_gt = {}
@@ -56,20 +57,27 @@ def generate_patient_level_roc():
     fpr, tpr, thresholds = roc_curve(y_true, y_scores)
     roc_auc = auc(fpr, tpr)
     
-    plt.figure(figsize=(8, 6))
-    plt.plot(fpr, tpr, color='b', lw=2, label=f'ROC curve (AUC = {roc_auc:.3f})')
+    youden_index = tpr - fpr
+    best_idx = np.argmax(youden_index)
+    best_thresh = thresholds[best_idx]
+    best_sens = tpr[best_idx]
+    best_spec = 1 - fpr[best_idx]
+    best_j = youden_index[best_idx]
+    
+    fig = plt.figure(figsize=(8, 8)) 
+    plt.plot(fpr, tpr, color='b', lw=2.5, label=f'ROC curve (AUC = {roc_auc:.3f})')
+    plt.plot(fpr[best_idx], tpr[best_idx], marker='o', color='r', markersize=8, label=f'Best Youden (J = {best_j:.3f})')
     plt.plot([0, 1], [0, 1], color='gray', linestyle='--', label='Chance')
-    plt.xlabel('1 - Specificity (False Positive Rate)')
-    plt.ylabel('Sensitivity (True Positive Rate)')
-    plt.title('Patient-Level ROC Curve')
-    plt.grid(True)
+    
+    plt.tick_params(axis='both', which='major', labelsize=14)
+    plt.grid(False)
     plt.xlim([-0.02, 1.02])
     plt.ylim([-0.02, 1.02])
-    plt.legend(loc='lower right')
     
-    plt.savefig('images/patient_level_roc_curve.png', dpi=300, bbox_inches='tight')
+    os.makedirs('images', exist_ok=True)
+    plt.savefig('images/patient_level_roc_curve_rtdetr_jp.png', dpi=300, bbox_inches='tight', pad_inches=0.1)
     plt.close()
-    print(f"Saved patient-level ROC curve to images/patient_level_roc_curve.png (AUC: {roc_auc:.4f})")
+    print(f"Saved patient-level ROC curve to images/patient_level_roc_curve_rtdetr_jp.png (AUC: {roc_auc:.4f})")
 
 if __name__ == "__main__":
     generate_patient_level_roc()
